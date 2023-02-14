@@ -5,4 +5,6 @@ A Rust wrapper for the omg.lol API by [Gil](https://gil.omg.lol)
 >
 > **This is a work in progress**: It doesn't quite work yet.
 
-[sourcehut (canonical repo)](https://git.sr.ht/~gpo/omglolrs) | [GitHub](https://github.com/GilOliveira/omglolrs)
+Repos: [sourcehut (canonical repo)](https://git.sr.ht/~gpo/omglolrs) | [GitHub](https://github.com/GilOliveira/omglolrs)
+
+LICENSE: While WIP, [get in touch](https://gil.omg.lol).
