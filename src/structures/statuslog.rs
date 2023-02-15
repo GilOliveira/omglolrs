@@ -2,16 +2,22 @@ use serde::Deserialize;
 
 use super::request_response::RequestResponse;
 
-#[derive(Deserialize, Debug)]
-pub struct StatuslogResponse {
-    request: RequestResponse,
-    response: StatuslogResponseArray,
-}
+// #[derive(Deserialize, Debug)]
+// pub struct StatuslogResponse {
+//     request: RequestResponse,
+//     response: StatuslogAllStatuses,
+// }
 
 #[derive(Deserialize, Debug)]
 pub struct StatuslogResponseArray {
     message: String,
     status: Status,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct StatuslogAllStatuses {
+    message: String,
+    statuses: Vec<Status>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -24,3 +30,5 @@ pub struct Status {
     content: String,
     external_url: Option<String>,
 }
+
+

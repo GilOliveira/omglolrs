@@ -1,33 +1,19 @@
-use serde::Deserialize;
-
 pub mod structures;
+pub mod requests;
 
-use structures::service_status::ServiceStatusResponse;
-use structures::statuslog::StatuslogResponse;
+use requests::themes::get_profile_themes;
 
 #[tokio::main]
 async fn main() {
-    let info = get_statuslog_status("gil", "63a8a6b3cbdc5").await;
+    // let info = get_statuslog_status("gil", "63a8a6b3cbdc5").await;
+    // let info = get_all_statuslog_statuses("gil").await;
+
+    let info = get_profile_themes().await;
 
     println!("response = {:#?}", info);
 }
 
-async fn get_statuslog_status(
-    address: &str,
-    id: &str,
-) -> Result<StatuslogResponse, Box<dyn std::error::Error>> {
-    let client = reqwest::Client::new();
-    let body = client
-        .get(format!(
-            "https://api.omg.lol/address/{address}/statuses/{id}"
-        ))
-        .send()
-        .await?
-        .json::<StatuslogResponse>()
-        .await?;
 
-    Ok(body)
-}
 
 // async fn get_omglol_status() -> Result<ServiceStatusResponse, Box<dyn std::error::Error>> {
 //     let client = reqwest::Client::new();

@@ -1,7 +1,15 @@
-use serde::{Deserialize};
+use serde::Deserialize;
+use serde_json::Value;
 
 #[derive(Deserialize, Debug)]
-pub struct RequestResponse {
-	status_code: i32,
-	success: bool,
+pub struct RequestResponse<T> {
+	request: RequestStatus,
+	response: T,
 }
+
+#[derive(Deserialize, Debug)]
+pub struct RequestStatus {
+    status_code: u16,
+    success: bool,
+}
+
