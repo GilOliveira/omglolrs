@@ -1,13 +1,4 @@
-use std::collections::HashMap;
 use serde::Deserialize;
-use super::request_response::RequestResponse;
-
-
-// #[derive(Deserialize, Debug)]
-// pub struct WeblogResponse<T> {
-//     request: RequestResponse,
-//     response: T,
-// }
 
 #[derive(Deserialize, Debug)]
 pub struct WeblogEntriesResponse {
@@ -33,7 +24,7 @@ pub struct WeblogEntry {
     output: String,
     entry: String,
 
-    #[serde(rename(deserialize = "entry"))]
+    #[serde(rename(deserialize = "type"))]
     entry_type: String,
 }
 
@@ -80,4 +71,3 @@ pub struct WeblogTemplateResponse {
     message: String,
     template: String,
 }
-

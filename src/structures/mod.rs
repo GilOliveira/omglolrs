@@ -1,5 +1,10 @@
+pub mod account;
+pub mod oauth;
+pub mod pastebin;
+pub mod purl;
 pub mod request_response;
 pub mod service_status;
 pub mod statuslog;
 pub mod themes;
+pub mod web;
 pub mod weblog;
