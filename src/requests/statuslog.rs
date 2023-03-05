@@ -1,7 +1,9 @@
 use super::super::structures::request_response::RequestResponse;
 use super::super::structures::statuslog::StatuslogResponseArray;
 
-pub async fn get_all_statuslog_statuses(address: &str) -> Result<RequestResponse<StatuslogResponseArray>, Box<dyn std::error::Error>> {
+pub async fn get_all_statuslog_statuses(
+    address: &str,
+) -> Result<RequestResponse<StatuslogResponseArray>, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let body = client
         .get(format!("https://api.omg.lol/address/{address}/statuses"))
@@ -10,12 +12,12 @@ pub async fn get_all_statuslog_statuses(address: &str) -> Result<RequestResponse
         .json::<RequestResponse<StatuslogResponseArray>>()
         .await?;
 
-        Ok(body)
+    Ok(body)
 }
 
 pub async fn get_statuslog_status(
-    address: &str,
-    id: &str,
+    address: &String,
+    id: &String,
 ) -> Result<RequestResponse<StatuslogResponseArray>, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let body = client

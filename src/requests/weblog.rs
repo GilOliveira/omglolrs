@@ -7,7 +7,7 @@ use crate::structures::weblog::WeblogTemplateResponse;
 // TODO: Add bearer tokens when needed
 
 pub async fn get_weblog_entries(
-    address: &str,
+    address: &String,
 ) -> Result<RequestResponse<WeblogEntriesResponse>, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let body = client
@@ -23,8 +23,8 @@ pub async fn get_weblog_entries(
 }
 
 pub async fn get_weblog_entry(
-    address: &str,
-    entry: &str,
+    address: &String,
+    entry: &String,
 ) -> Result<RequestResponse<WeblogEntryResponse>, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let body = client
@@ -40,7 +40,7 @@ pub async fn get_weblog_entry(
 }
 
 pub async fn get_latest_weblog_entry(
-    address: &str,
+    address: &String,
 ) -> Result<RequestResponse<WeblogEntryResponse>, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let body = client
@@ -56,7 +56,7 @@ pub async fn get_latest_weblog_entry(
 }
 
 pub async fn get_weblog_config(
-    address: &str,
+    address: &String,
 ) -> Result<RequestResponse<WeblogConfigurationResponse>, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let body = client
@@ -72,7 +72,7 @@ pub async fn get_weblog_config(
 }
 
 pub async fn get_weblog_template(
-    address: &str,
+    address: &String,
 ) -> Result<RequestResponse<WeblogTemplateResponse>, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let body = client
