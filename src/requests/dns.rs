@@ -8,8 +8,8 @@ use crate::structures::request_response::RequestResponse;
 /// * `address` - The address for which you want to query DNS records
 /// * `api_key` - An API key with permission to access records for the `address`
 pub async fn get_dns_records(
-    address: &String,
-    api_key: &String,
+    address: &str,
+    api_key: &str,
 ) -> Result<RequestResponse<DNSrecords>, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let body = client
@@ -30,9 +30,9 @@ pub async fn get_dns_records(
 /// * `id` - The unique ID of the DNS record
 /// * `api_key` - An API key with permission to access records for the `address`
 pub async fn delete_dns_record(
-    address: &String,
-    id: &String,
-    api_key: &String,
+    address: &str,
+    id: &str,
+    api_key: &str,
 ) -> Result<MessageResponse, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let body = client

@@ -16,8 +16,8 @@ pub async fn get_all_statuslog_statuses(
 }
 
 pub async fn get_statuslog_status(
-    address: &String,
-    id: &String,
+    address: &str,
+    id: &str,
 ) -> Result<RequestResponse<StatuslogResponseArray>, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let body = client
