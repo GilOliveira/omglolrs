@@ -1,0 +1,5 @@
+target
+secretvars.sh
+.DS_Store
+.nova
+.env
