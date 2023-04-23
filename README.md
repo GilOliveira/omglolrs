@@ -1,13 +1,23 @@
 # omglol crate for Rust
 A asynchronous Rust wrapper for the omg.lol API by [Gil](https://gil.lol).
 
+LICENSE: MPL 2.0 (see [`LICENSE`](LICENSE))
+
 > **Warning**: **This is a work in progress**
 >
 > Unstable and bug-prone. Endpoints may change. Upstream endpoints under development.
 
-Repos: [sourcehut (canonical)](https://git.sr.ht/~gpo/omglolrs) | [GitLab](https://gitlab.com/GilOliveira/omg.lol.rs) | [GitHub](https://github.com/GilOliveira/omglolrs)
+## Contribute
 
-LICENSE: MPL 2.0 (see [`LICENSE`](LICENSE))
+[Project homepage](https://sr.ht/~gpo/omglolrs/)
+
+Repos: [sourcehut (canonical)](https://git.sr.ht/~gpo/omglolrs) |
+       [GitLab](https://gitlab.com/GilOliveira/omglolrs) |
+       [GitHub](https://github.com/GilOliveira/omglolrs) |
+       [Codeberg](https://codeberg.org/Gil/omglolrs)
+
+Caught a bug? [Mail in a ticket](mailto:~gpo/omglolrs@todo.sr.ht) after checking the
+[bug tracker](https://todo.sr.ht/~gpo/omglolrs).
 
 ## Examples
 
