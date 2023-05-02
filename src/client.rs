@@ -417,6 +417,25 @@ impl OmglolClient<NoAuth> {
             state: PhantomData,
         }
     }
+}
+
+impl OmglolClient {
+    /// Create a new `OmglolClient`.
+    ///
+    /// The client is created in unauthenticated form, i.e. restricted to
+    /// methods that rely on public endpoints only.
+    ///
+    /// Usage:
+    /// ```rust
+    /// let client = OmglolClient::new()
+    /// ```
+    pub fn new() -> OmglolClient<NoAuth> {
+        OmglolClient {
+            client: Client::new(),
+            api_key: None,
+            state: PhantomData,
+        }
+    }
 
     pub async fn get_profile_themes(
         &self,
@@ -510,25 +529,6 @@ impl OmglolClient<NoAuth> {
             None,
         )
         .await
-    }
-}
-
-impl OmglolClient {
-    /// Create a new `OmglolClient`.
-    ///
-    /// The client is created in unauthenticated form, i.e. restricted to
-    /// methods that rely on public endpoints only.
-    ///
-    /// Usage:
-    /// ```rust
-    /// let client = OmglolClient::new()
-    /// ```
-    pub fn new() -> OmglolClient<NoAuth> {
-        OmglolClient {
-            client: Client::new(),
-            api_key: None,
-            state: PhantomData,
-        }
     }
 }
 
