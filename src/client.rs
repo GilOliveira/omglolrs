@@ -11,6 +11,8 @@ This Source Code Form is subject to the terms of the Mozilla Public License, v. 
  You can obtain one at https://mozilla.org/MPL/2.0/.
 */
 
+use std::marker::PhantomData;
+
 use crate::email::format_addresses_string;
 use crate::structures::*;
 use email_address::EmailAddress;
@@ -26,90 +28,19 @@ macro_rules! api_endpoint (
 
 pub(crate) use api_endpoint;
 
+pub struct Auth;
+pub struct NoAuth;
+
+
+/// Client for api.omg.lol
 #[derive(Clone)]
-pub struct OmglolClient {
+pub struct OmglolClient<State = NoAuth> {
     client: Client,
     api_key: Option<String>,
+    state: PhantomData<State>,
 }
 
-/// OmglolClient allows you to make authenticated or unauthenticated REST API
-/// requests.
-impl OmglolClient {
-    /// Create a new OmglolClient.
-    ///
-    /// For an unauthenticated client (restricted to public endpoints only), use:
-    /// ```rust
-    /// let client = OmglolClient::new(None)
-    /// ```
-    ///
-    /// For an authenticated client, use:
-    /// ```rust
-    /// let client = OmglolClient::new(Some("your_api_key_here".toString()))
-    pub fn new(api_key: Option<String>) -> OmglolClient {
-        OmglolClient {
-            client: Client::new(),
-            api_key,
-        }
-    }
-
-    async fn send_request<T>(
-        &self,
-        authenticate: bool,
-        method: Method,
-        uri: &str,
-        body: Option<String>,
-    ) -> Result<RequestResponse<T>, Box<dyn std::error::Error>>
-    where
-        T: DeserializeOwned,
-    {
-        let reqwest_client = &self.client;
-        let mut req = reqwest_client.request(method, api_endpoint!(uri));
-
-        if authenticate {
-            req = req.bearer_auth(&self.api_key.as_ref().unwrap().to_string());
-        }
-
-        if body.is_some() {
-            req = req.body(body.unwrap());
-        }
-
-        #[cfg(debug_assertions)]
-        dbg!(&req);
-
-        let resp = req.send().await?;
-
-        let raw_res = match &resp.status().as_u16() {
-            _status_code @ 200 => resp.text().await?,
-            status_code => {
-                return Err(Box::new(RequestError {
-                    status_code: *status_code,
-                }))
-            }
-        };
-
-        #[cfg(debug_assertions)]
-        dbg!(&raw_res);
-
-        let res: RequestResponse<T> = serde_json::from_str(&raw_res).unwrap();
-
-        Ok(res)
-    }
-
-    // Themes
-    pub async fn get_profile_themes(
-        &self,
-    ) -> Result<RequestResponse<ProfileThemes>, Box<dyn std::error::Error>> {
-        self.send_request::<ProfileThemes>(false, Method::GET, "theme/list", None)
-            .await
-    }
-
-    pub async fn service_status(
-        &self,
-    ) -> Result<RequestResponse<ServiceStatus>, Box<dyn std::error::Error>> {
-        self.send_request::<ServiceStatus>(false, Method::GET, "service/info", None)
-            .await
-    }
-
+impl OmglolClient<Auth> {
     pub async fn get_dns_records(
         &self,
         address: &str,
@@ -192,19 +123,6 @@ impl OmglolClient {
         .await
     }
 
-    pub async fn get_statuslog_bio(
-        &self,
-        address: &str,
-    ) -> Result<RequestResponse<StatuslogBio>, Box<dyn std::error::Error>> {
-        self.send_request::<StatuslogBio>(
-            false,
-            Method::GET,
-            format!("address/{}/statuses/bio", &address).as_ref(),
-            None,
-        )
-        .await
-    }
-
     pub async fn update_statuslog_bio<T: ContentAsJSON>(
         &self,
         bio: T,
@@ -263,61 +181,34 @@ impl OmglolClient {
         .await
     }
 
-    pub async fn get_listed_pastes(
+    pub async fn create_weblog_entry(
         &self,
+        content: &str,
+        entry_id: &str,
         address: &str,
-    ) -> Result<RequestResponse<PastebinResponse>, Box<dyn std::error::Error>> {
-        self.send_request::<PastebinResponse>(
-            false,
-            Method::GET,
-            format!("address/{}/pastebin", &address).as_ref(),
-            None,
-        )
-        .await
-    }
-
-    pub async fn get_paste(
-        &self,
-        address: &str,
-        title: &str,
-    ) -> Result<RequestResponse<PasteResponse>, Box<dyn std::error::Error>> {
-        self.send_request::<PasteResponse>(
-            false,
-            Method::GET,
-            format!("address/{}/pastebin/{title}", &address).as_ref(),
-            None,
-        )
-        .await
-    }
-
-    pub async fn upload_paste(
-        &self,
-        address: &str,
-        paste: Paste,
-    ) -> Result<RequestResponse<PasteResponse>, Box<dyn std::error::Error>> {
-        self.send_request::<PasteResponse>(
-            false,
+    ) -> Result<RequestResponse<WeblogEntryResponse>, Box<dyn std::error::Error>> {
+        self.send_request::<WeblogEntryResponse>(
+            true,
             Method::POST,
-            format!("address/{}/pastebin", &address).as_ref(),
-            Some(serde_json::to_string(&paste)?),
+            format!("address/{}/weblog/entry/{}", address, entry_id).as_ref(),
+            Some(content.to_string()),
         )
         .await
     }
 
-    pub async fn delete_paste(
+    pub async fn update_weblog_configuration(
         &self,
+        configuration: &str,
         address: &str,
-        title: &str,
-    ) -> Result<RequestResponse<MessageResponse>, Box<dyn std::error::Error>> {
-        self.send_request::<MessageResponse>(
-            false,
-            Method::DELETE,
-            format!("address/{}/pastebin/{title}", &address).as_ref(),
-            None,
+    ) -> Result<RequestResponse<WeblogEntryResponse>, Box<dyn std::error::Error>> {
+        self.send_request::<WeblogEntryResponse>(
+            true,
+            Method::POST,
+            format!("address/{}/weblog/template", address).as_ref(),
+            Some(configuration.to_string()),
         )
         .await
     }
-
     pub async fn get_purl(
         &self,
         address: &str,
@@ -367,19 +258,6 @@ impl OmglolClient {
             true,
             Method::GET,
             format!("account/{}/info", email).as_ref(),
-            None,
-        )
-        .await
-    }
-
-    pub async fn get_public_address_info(
-        &self,
-        address: &str,
-    ) -> Result<RequestResponse<Address>, Box<dyn std::error::Error>> {
-        self.send_request::<Address>(
-            false,
-            Method::GET,
-            format!("account/{}/info", address).as_ref(),
             None,
         )
         .await
@@ -506,45 +384,198 @@ impl OmglolClient {
         .await
     }
 
+    pub async fn delete_paste(
+        &self,
+        address: &str,
+        title: &str,
+    ) -> Result<RequestResponse<MessageResponse>, Box<dyn std::error::Error>> {
+        self.send_request::<MessageResponse>(
+            false,
+            Method::DELETE,
+            format!("address/{}/pastebin/{title}", &address).as_ref(),
+            None,
+        )
+        .await
+    }
+}
+
+impl OmglolClient<NoAuth> {
+
+    /// Create an authenticated `OmglolClient`.
+    ///
+    /// This client is able to access private endpoints.
+    /// 
+    /// Example:
+    /// ```rust
+    /// let client = OmglolClient::new()
+    /// let client = client.auth("YOUR_API_KEY".to_string())
+    /// ```
+    pub fn auth(&self, api_key: String) -> OmglolClient<Auth> {
+        OmglolClient {
+            client: self.client.to_owned(),
+            api_key: Some(api_key),
+            state: PhantomData,
+        }
+    }
+
+    pub async fn get_profile_themes(
+        &self,
+    ) -> Result<RequestResponse<ProfileThemes>, Box<dyn std::error::Error>> {
+        self.send_request::<ProfileThemes>(false, Method::GET, "theme/list", None)
+            .await
+    }
+
+    pub async fn service_status(
+        &self,
+    ) -> Result<RequestResponse<ServiceStatus>, Box<dyn std::error::Error>> {
+        self.send_request::<ServiceStatus>(false, Method::GET, "service/info", None)
+            .await
+    }
+
+    pub async fn get_statuslog_bio(
+        &self,
+        address: &str,
+    ) -> Result<RequestResponse<StatuslogBio>, Box<dyn std::error::Error>> {
+        self.send_request::<StatuslogBio>(
+            false,
+            Method::GET,
+            format!("address/{}/statuses/bio", &address).as_ref(),
+            None,
+        )
+        .await
+    }
+
+    pub async fn get_listed_pastes(
+        &self,
+        address: &str,
+    ) -> Result<RequestResponse<PastebinResponse>, Box<dyn std::error::Error>> {
+        self.send_request::<PastebinResponse>(
+            false,
+            Method::GET,
+            format!("address/{}/pastebin", &address).as_ref(),
+            None,
+        )
+        .await
+    }
+
+    pub async fn get_paste(
+        &self,
+        address: &str,
+        title: &str,
+    ) -> Result<RequestResponse<PasteResponse>, Box<dyn std::error::Error>> {
+        self.send_request::<PasteResponse>(
+            false,
+            Method::GET,
+            format!("address/{}/pastebin/{title}", &address).as_ref(),
+            None,
+        )
+        .await
+    }
+
+    pub async fn upload_paste(
+        &self,
+        address: &str,
+        paste: Paste,
+    ) -> Result<RequestResponse<PasteResponse>, Box<dyn std::error::Error>> {
+        self.send_request::<PasteResponse>(
+            false,
+            Method::POST,
+            format!("address/{}/pastebin", &address).as_ref(),
+            Some(serde_json::to_string(&paste)?),
+        )
+        .await
+    }
+
+    pub async fn get_public_address_info(
+        &self,
+        address: &str,
+    ) -> Result<RequestResponse<Address>, Box<dyn std::error::Error>> {
+        self.send_request::<Address>(
+            false,
+            Method::GET,
+            format!("account/{}/info", address).as_ref(),
+            None,
+        )
+        .await
+    }
+
     pub async fn get_latest_weblog_post(
         &self,
         address: &str,
     ) -> Result<RequestResponse<WeblogEntryResponse>, Box<dyn std::error::Error>> {
         self.send_request::<WeblogEntryResponse>(
-            true,
+            false,
             Method::GET,
             format!("address/{}/weblog/post/latest", address).as_ref(),
             None,
         )
         .await
     }
+}
 
-    pub async fn create_weblog_entry(
-        &self,
-        content: &str,
-        entry_id: &str,
-        address: &str,
-    ) -> Result<RequestResponse<WeblogEntryResponse>, Box<dyn std::error::Error>> {
-        self.send_request::<WeblogEntryResponse>(
-            true,
-            Method::POST,
-            format!("address/{}/weblog/entry/{}", address, entry_id).as_ref(),
-            Some(content.to_string()),
-        )
-        .await
+impl OmglolClient {
+    /// Create a new `OmglolClient`.
+    ///
+    /// The client is created in unauthenticated form, i.e. restricted to
+    /// methods that rely on public endpoints only.
+    ///
+    /// Usage:
+    /// ```rust
+    /// let client = OmglolClient::new()
+    /// ```
+    pub fn new() -> OmglolClient<NoAuth> {
+        OmglolClient {
+            client: Client::new(),
+            api_key: None,
+            state: PhantomData,
+        }
     }
+}
 
-    pub async fn update_weblog_configuration(
+
+/// OmglolClient allows you to make authenticated or unauthenticated REST API
+/// requests.
+impl<State> OmglolClient<State> {
+    async fn send_request<T>(
         &self,
-        configuration: &str,
-        address: &str,
-    ) -> Result<RequestResponse<WeblogEntryResponse>, Box<dyn std::error::Error>> {
-        self.send_request::<WeblogEntryResponse>(
-            true,
-            Method::POST,
-            format!("address/{}/weblog/template", address).as_ref(),
-            Some(configuration.to_string()),
-        )
-        .await
+        authenticate: bool,
+        method: Method,
+        uri: &str,
+        body: Option<String>,
+    ) -> Result<RequestResponse<T>, Box<dyn std::error::Error>>
+    where
+        T: DeserializeOwned,
+    {
+        let reqwest_client = &self.client;
+        let mut req = reqwest_client.request(method, api_endpoint!(uri));
+
+        if authenticate {
+            req = req.bearer_auth(&self.api_key.as_ref().unwrap().to_string());
+        }
+
+        if body.is_some() {
+            req = req.body(body.unwrap());
+        }
+
+        #[cfg(debug_assertions)]
+        dbg!(&req);
+
+        let resp = req.send().await?;
+
+        let raw_res = match &resp.status().as_u16() {
+            _status_code @ 200 => resp.text().await?,
+            status_code => {
+                return Err(Box::new(RequestError {
+                    status_code: *status_code,
+                }))
+            }
+        };
+
+        #[cfg(debug_assertions)]
+        dbg!(&raw_res);
+
+        let res: RequestResponse<T> = serde_json::from_str(&raw_res).unwrap();
+
+        Ok(res)
     }
 }
