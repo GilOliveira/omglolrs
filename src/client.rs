@@ -68,21 +68,6 @@ impl OmglolClient<Auth> {
         .await
     }
 
-    // Statuslog
-
-    pub async fn get_all_statuses(
-        &self,
-        address: &str,
-    ) -> Result<RequestResponse<StatuslogAllStatuses>, Box<dyn std::error::Error>> {
-        self.send_request::<StatuslogAllStatuses>(
-            true,
-            Method::GET,
-            format!("address/{}/statuses", &address).as_ref(),
-            None,
-        )
-        .await
-    }
-
     pub async fn get_status(
         &self,
         address: &str,
@@ -526,6 +511,19 @@ impl OmglolClient {
             false,
             Method::GET,
             format!("address/{}/weblog/post/latest", address).as_ref(),
+            None,
+        )
+        .await
+    }
+
+    pub async fn get_all_statuses(
+        &self,
+        address: &str,
+    ) -> Result<RequestResponse<StatuslogAllStatuses>, Box<dyn std::error::Error>> {
+        self.send_request::<StatuslogAllStatuses>(
+            false,
+            Method::GET,
+            format!("address/{}/statuses", &address).as_ref(),
             None,
         )
         .await
