@@ -27,7 +27,7 @@ Caught a bug? [Mail in a ticket](mailto:~gpo/omglolrs@todo.sr.ht) after checking
 use omglol::client::OmglolClient;
 
 fn main() {
-  let response = OmglolClient::new(None())
+  let response = OmglolClient::new()
                   .get_service_status()
                   .await;
   println!("{:#?}", response);
@@ -39,7 +39,8 @@ fn main() {
 use omglol::client::OmglolClient;
 
 fn main() {
-  let response = OmglolClient::new(Some("YOUR_API_KEY_HERE"))
+  let response = OmglolClient::new()
+                  .auth("YOUR_API_KEY_HERE")
                   .get_web_page("your-address")
                   .await();
   println!("{:#?}", response);
