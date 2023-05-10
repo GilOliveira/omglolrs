@@ -1,4 +1,8 @@
-use omglol::{OmglolClient, structures::{DNStype, RequestError}, client::{Auth, NoAuth}};
+use omglol::{
+    client::{Auth, NoAuth},
+    structures::{DNStype, RequestError},
+    OmglolClient,
+};
 
 use dotenv::dotenv;
 use std::env;
@@ -25,55 +29,40 @@ fn init_auth_client() -> (OmglolClient<Auth>, String) {
 #[tokio::test]
 async fn get_all_statuses() {
     let (client, address) = init_noauth_client();
-    let response = client.get_all_statuses(&address)
-                                                .await
-                                                .unwrap()
-                                                .response;
+    let response = client.get_all_statuses(&address).await.unwrap().response;
     println!("{:#?}", response);
 }
 
 #[test]
-fn dns_display () {
+fn dns_display() {
     assert!(format!("{}", DNStype::A) == "A");
 }
 
 #[tokio::test]
 async fn get_service_status() {
     let (client, _) = init_noauth_client();
-    let service_status = client.service_status()
-                                              .await
-                                              .unwrap()
-                                              .response;
+    let service_status = client.service_status().await.unwrap().response;
     println!("{:#?}", service_status);
 }
 
 #[tokio::test]
 async fn get_profile_themes() {
     let (client, _) = init_noauth_client();
-    let info = client.get_profile_themes()
-                                     .await
-                                     .unwrap()
-                                     .response;
+    let info = client.get_profile_themes().await.unwrap().response;
     println!("{:#?}", info);
 }
 
 #[tokio::test]
 async fn get_dns_records() {
     let (client, address) = init_auth_client();
-    let response = client.get_dns_records(&address)
-                                     .await
-                                     .unwrap()
-                                     .response;
+    let response = client.get_dns_records(&address).await.unwrap().response;
     println!("{:#?}", response);
 }
 
 #[tokio::test]
 async fn get_web_page() {
     let (client, address) = init_auth_client();
-    let response = client.get_web_page(&address)
-                              .await
-                              .unwrap()
-                              .response;
+    let response = client.get_web_page(&address).await.unwrap().response;
     println!("{:#?}", response);
 }
 
