@@ -285,7 +285,7 @@ pub struct StatuslogAllStatuses {
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Status {
     /// A status log entry.
-    pub emoji: char,
+    pub emoji: String,
     pub content: String,
     pub external_url: Option<String>,
 
@@ -309,7 +309,7 @@ impl Status {
     /// * `emoji`, your status' emoji
     /// * `content`, The text content of your status
     /// * `external_url`, An optional external URL for your status
-    pub fn new(emoji: char, content: String, external_url: Option<String>) -> Status {
+    pub fn new(emoji: String, content: String, external_url: Option<String>) -> Status {
         Status {
             emoji,
             content,
