@@ -1,7 +1,7 @@
 # omglol crate for Rust
 An asynchronous Rust wrapper for the omg.lol API by [Gil](https://gil.lol).
 
-LICENSE: MPL 2.0 (see [`LICENSE`](/LICENSE))
+LICENSE: MPL 2.0 (see [`LICENSE`](LICENSE))
 
 > **Warning**: **Heads up! This is a public alpha for adventurous folks!**
 >
