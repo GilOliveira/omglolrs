@@ -6,12 +6,13 @@ LICENSE: MPL 2.0 (see [`LICENSE`](/LICENSE))
 > **Warning**: **Heads up! This is a public alpha for adventurous folks!**
 >
 > Keep in mind:
-> All basic features should be implemented and functional
-> Not all features have been throughly tested
-> Endpoints are bound to change
-> Bugs and unresolved issues are bound to come up
-> This is available as-is and with no support or warranty
-> Upstream endpoints are bound to change and will break this crate
+> * All basic features should be implemented and functional
+> * Not all features have been throughly tested
+> * Endpoints are bound to change
+> * Bugs and unresolved issues are bound to come up
+> * This is available as-is and with no support or warranty
+> * Upstream endpoints are bound to change and will break this crate
+> * This crate is just provided for fun 🌈
 
 ## Contribute
 
