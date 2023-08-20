@@ -3,9 +3,15 @@ An asynchronous Rust wrapper for the omg.lol API by [Gil](https://gil.lol).
 
 LICENSE: MPL 2.0 (see [`LICENSE`](/LICENSE))
 
-> **Warning**: **This is a work in progress**
+> **Warning**: **Heads up! This is a public alpha for adventurous folks!**
 >
-> Unstable and bug-prone. Endpoints may change. Upstream endpoints under development.
+> Keep in mind:
+> All basic features should be implemented and functional
+> Not all features have been throughly tested
+> Endpoints are bound to change
+> Bugs and unresolved issues are bound to come up
+> This is available as-is and with no support or warranty
+> Upstream endpoints are bound to change and will break this crate
 
 ## Contribute
 

@@ -444,18 +444,25 @@ impl Web {
 
 #[derive(Deserialize, Debug)]
 pub struct WeblogEntriesResponse {
+    /// Status message povided by the API
     message: String,
+
+    /// A vector of `WeblogEntry` structs.
     entries: Vec<WeblogEntry>,
 }
 
+/// API response for a weblog entry GET request.
 #[derive(Deserialize, Debug)]
 pub struct WeblogEntryResponse {
-    message: String,
+    /// Status message povided by the API
+    pub message: String,
 
+    /// Weblog entry
     #[serde(alias = "post")]
-    entry: WeblogEntry,
+    pub entry: WeblogEntry,
 }
 
+/// A weblog entry
 #[derive(Deserialize, Debug)]
 pub struct WeblogEntry {
     location: String,
@@ -472,25 +479,29 @@ pub struct WeblogEntry {
     entry_type: String,
 }
 
+/// Metadata for a weblog entry.
 #[derive(Deserialize, Debug)]
 pub struct WeblogMetadata {
-    date: String,
-    slug: String,
+    pub date: String,
+    pub slug: String,
 }
 
+/// API resopnse for a weblog configuration GET request.
 #[derive(Deserialize, Debug)]
 pub struct WeblogConfigurationResponse {
-    message: String,
-    configuration: WeblogConfigurationFormats,
+    pub message: String,
+    pub configuration: WeblogConfigurationFormats,
 }
 
+/// Weblog configuration in different formats
 #[derive(Deserialize, Debug)]
 pub struct WeblogConfigurationFormats {
-    object: WeblogConfiguration,
-    json: String,
-    raw: String,
+    pub object: WeblogConfiguration,
+    pub json: String,
+    pub raw: String,
 }
 
+/// A weblog's configuration.
 #[derive(Deserialize, Debug)]
 pub struct WeblogConfiguration {
     pub weblog_title: String,
@@ -510,14 +521,17 @@ pub struct WeblogConfiguration {
     pub search_results_format: String,
 }
 
+/// API response for a weblog template GET request.
 #[derive(Deserialize, Debug)]
 pub struct WeblogTemplateResponse {
     pub message: String,
     pub template: String,
 }
 
+/// An HTTP request error
 #[derive(Debug, Clone)]
 pub struct RequestError {
+    /// HTTP status code as defined in [RFC 9110](https://httpwg.org/specs/rfc9110.html#overview.of.status.codes).
     pub status_code: u16,
 }
 

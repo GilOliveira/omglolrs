@@ -31,7 +31,6 @@ pub(crate) use api_endpoint;
 pub struct Auth;
 pub struct NoAuth;
 
-
 /// Client for api.omg.lol
 #[derive(Clone)]
 pub struct OmglolClient<State = NoAuth> {
@@ -385,11 +384,10 @@ impl OmglolClient<Auth> {
 }
 
 impl OmglolClient<NoAuth> {
-
     /// Create an authenticated `OmglolClient`.
     ///
     /// This client is able to access private endpoints.
-    /// 
+    ///
     /// Example:
     /// ```rust
     /// let client = OmglolClient::new()
@@ -529,7 +527,6 @@ impl OmglolClient {
         .await
     }
 }
-
 
 /// OmglolClient allows you to make authenticated or unauthenticated REST API
 /// requests.
