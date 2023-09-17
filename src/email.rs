@@ -11,6 +11,8 @@ This Source Code Form is subject to the terms of the Mozilla Public License, v. 
  You can obtain one at https://mozilla.org/MPL/2.0/.
 */
 
+//! Helper to format email addresses in the format that the API expects
+
 use email_address::EmailAddress;
 
 /// Format a `Vec<EmailAddress>` to a String in the JSON format the API expects

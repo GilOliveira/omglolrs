@@ -237,8 +237,8 @@ impl OmglolClient<Auth> {
     pub async fn get_account_info(
         &self,
         email: &EmailAddress,
-    ) -> Result<RequestResponse<AcccountResponse>, Box<dyn std::error::Error>> {
-        self.send_request::<AcccountResponse>(
+    ) -> Result<RequestResponse<AccountResponse>, Box<dyn std::error::Error>> {
+        self.send_request::<AccountResponse>(
             true,
             Method::GET,
             format!("account/{}/info", email).as_ref(),
@@ -390,8 +390,8 @@ impl OmglolClient<NoAuth> {
     ///
     /// Example:
     /// ```rust
-    /// let client = OmglolClient::new()
-    /// let client = client.auth("YOUR_API_KEY".to_string())
+    /// let client = OmglolClient::new();
+    /// let client = client.auth("YOUR_API_KEY".to_string());
     /// ```
     pub fn auth(&self, api_key: String) -> OmglolClient<Auth> {
         OmglolClient {
@@ -410,7 +410,7 @@ impl OmglolClient {
     ///
     /// Usage:
     /// ```rust
-    /// let client = OmglolClient::new()
+    /// let client = OmglolClient::new();
     /// ```
     pub fn new() -> OmglolClient<NoAuth> {
         OmglolClient {

@@ -22,70 +22,134 @@ use std::{collections::HashMap, error::Error, fmt, fmt::Display};
 //     true
 
 #[derive(Deserialize, Debug)]
-pub struct AcccountResponse {
-    message: String,
-    email: String,
-    name: String,
-    api_key: String,
-    created: TimeStrings,
-    settings: AccountSettings,
+pub struct AccountResponse {
+    /// Status message returned by the API
+    pub message: String,
+
+    /// Email associated with the account
+    pub email: String,
+
+    /// Name associated with the account
+    pub name: String, // TODO: Check if this can be null
+
+    /// API key
+    pub api_key: String,
+
+    /// Timestamp of account creation
+    pub created: TimeStrings,
+
+    /// User-defined account settings
+    pub settings: AccountSettings,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct AccountSettings {
-    owner: String,
-    communication: Option<String>, // IMPROVEMENT: Remove "Option" if patched upstream
-    date_format: Option<String>,   // https://github.com/neatnik/omg.lol/issues/613
-    web_editor: String,
+    /// Email address of account owner
+    pub owner: String,
+
+    /// Opt-in for email communications
+    pub communication: Option<String>, // IMPROVEMENT: Remove "Option" if patched upstream https://github.com/neatnik/omg.lol/issues/613
+    /// Opt-in for email communications
+    pub date_format: Option<String>, // IMPROVEMENT: Remove "Option" if patched upstream https://github.com/neatnik/omg.lol/issues/613
+
+    /// Which web editor the user chose to use
+    pub web_editor: String, // TODO: Check if this can be null, it seems so in the official docs
 }
 
+/// Response to a request to determine if an account is verified
 #[derive(Deserialize, Debug)]
 pub struct Verification {
-    message: String,
+    /// Status message returned by the API
+    pub message: String,
+
+    /// True if the account is verified, false otherwise
     pub verified: bool,
 }
 
 /// Address expiration time in different string formats
 #[derive(Deserialize, Debug)]
 pub struct Expiration {
-    message: String,
+    /// Status message returned by the API
+    pub message: String,
+
+    /// True if the domain has expired, false otherwise
     pub expired: bool,
+
+    /// False if the domain has a lifetime registration, true otherwise
     pub will_expire: Option<bool>,
+
+    /// Unix time
     pub unix_epoch_time: Option<String>,
+
+    /// Time in [ISO 7601](https://www.iso.org/iso-8601-date-and-time-format.html) format
     pub iso_8601_time: Option<String>,
+
+    /// Time in [RFC 2822](https://datatracker.ietf.org/doc/html/rfc2822) format
     pub rfc_2822_time: Option<String>,
+
+    /// Relative time in English
     pub relative_time: Option<String>,
 }
 
-/// omg.lol address
+/// Address registered with omg.lol
 #[derive(Deserialize, Debug)]
 pub struct Address {
-    address: String,
-    message: String,
-    registration: TimeStrings,
-    expiration: Expiration,
-    verification: Verification,
-    owner: Option<String>,
+    /// String of address, without ".omg.lol"
+    pub address: String,
+
+    /// Status message returned by the API
+    pub message: String,
+
+    /// Time of address registration
+    pub registration: TimeStrings,
+
+    /// Time of address expiration
+    pub expiration: Expiration,
+
+    /// Verification status of address
+    pub verification: Verification,
+
+    /// Email of the address' owner, if it exists
+    pub owner: Option<String>,
 }
 
 /// Successful DNS records request response
 #[derive(Deserialize, Debug)]
 pub struct DNSrecords {
-    message: String,
-    dns: Vec<DNSrecord>,
+    /// Status message returned by the API
+    pub message: String,
+
+    /// Vector of DNS records
+    pub dns: Vec<DNSrecord>,
 }
 
 /// DNS record
 #[derive(Deserialize, Debug)]
 pub struct DNSrecord {
+    /// Record ID
     pub id: i32,
+
+    /// Domain relative to omg.lol zone
     pub name: String,
+
+    /// Entry data/target
     pub data: String,
+
+    /// Record priority, if applicable
     pub priority: Option<i32>,
+
+    /// Record TTL (time to live)
     pub ttl: i32,
+
+    /// Creation timestamp in
+    /// [ISO 7601](https://www.iso.org/iso-8601-date-and-time-format.html) format, if applicable
     pub created_at: Option<String>,
+
+    /// Last update timestamp in
+    /// [ISO 7601](https://www.iso.org/iso-8601-date-and-time-format.html) format, if applicable
     pub updated_at: Option<String>,
 
+    /// DNS record type
     #[serde(rename = "type")]
     pub record_type: DNStype,
 }
@@ -112,16 +176,19 @@ impl Display for DNStype {
 /// Forwarding addresses for your @omg.lol email address
 #[derive(Deserialize, Debug)]
 pub struct ForwardingAddresses {
-    message: String,
-    destination_string: String,
-    destination_array: Vec<String>,
-    address: String,
-    email_address: String,
+    /// Status message returned by the API
+    pub message: String,
+    pub destination_string: String,
+    pub destination_array: Vec<String>,
+    pub address: String,
+    pub email_address: String,
 }
 
+/// Struct for when the server returns a String message
 #[derive(Deserialize, Debug)]
 pub struct MessageResponse {
-    message: String,
+    /// Status message returned by the API
+    pub message: String,
 }
 
 /// Response to a REST API request.
@@ -131,6 +198,7 @@ pub struct RequestResponse<T> {
     pub response: T,
 }
 
+/// Status of a request
 #[derive(Deserialize, Debug)]
 pub struct RequestStatus {
     /// HTTP status code of the request response
@@ -150,55 +218,63 @@ pub struct TimeStrings {
     pub rfc_2822_time: String,
     /// Relative time string, e.g. "20 minutes ago".
     pub relative_time: String,
-    /// Message provided by the API server in respnse to some requests.
+    /// Message provided by the API server in response to some requests.
     pub message: Option<String>,
 }
 
+/// Response to a query to a Now page endpoint
 #[derive(Deserialize, Debug)]
 pub struct NowResponse {
-    message: String,
-    now: Vec<NowPage>,
+    pub message: String,
+    pub now: Vec<NowPage>,
 }
 
+/// Now page
 #[derive(Deserialize, Debug)]
 pub struct NowPage {
-    content: String,
-    updated: u32,
-    listed: u8,
-    nudge: u8,
-    metadata: String,
+    pub content: String,
+    pub updated: u32,
+    pub listed: u8,
+    pub nudge: u8,
+    pub metadata: String,
 }
 
+/// Response to a Now Garden endpoint
 #[derive(Deserialize, Debug)]
 pub struct NowGardenResponse {
-    message: String,
-    garden: Vec<NowGarden>,
+    pub message: String,
+    pub garden: Vec<NowGarden>,
 }
 
+/// A Now Garden
 #[derive(Deserialize, Debug)]
 pub struct NowGarden {
-    address: String,
-    url: String,
-    updated: TimeStrings,
+    pub address: String,
+    pub url: String,
+    pub updated: TimeStrings,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Token {
-    access_token: String,
-    token_type: String,
-    scope: String,
+    pub access_token: String,
+    pub token_type: String,
+    pub scope: String,
 }
 
+/// Response for a Paste request
 #[derive(Deserialize, Debug)]
 pub struct PasteResponse {
-    message: String,
-    pastebin: Paste,
+    /// Status message returned by the API
+    pub message: String,
+    pub pastebin: Paste,
 }
 
+/// Response for a Pastebin request
 #[derive(Deserialize, Debug)]
 pub struct PastebinResponse {
-    message: String,
-    success: Vec<Paste>,
+    /// Status message returned by the API
+    pub message: String,
+    pub success: Vec<Paste>,
 }
 
 /// Pastebin paste
@@ -208,9 +284,10 @@ pub struct Paste {
     pub content: String,
 
     #[serde(skip_serializing)]
-    modified_on: Option<String>,
+    pub modified_on: Option<String>,
 }
 
+/// A Paste from [paste.lol](https://paste.lol)
 impl Paste {
     /// New instance of `Paste`
     pub fn new(title: String, content: String) -> Paste {
@@ -224,29 +301,32 @@ impl Paste {
 
 #[derive(Deserialize, Debug)]
 pub struct PurlResponse {
-    message: String,
-    purl: Purl,
+    /// Status message returned by the API
+    pub message: String,
+    pub purl: Purl,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct PurlsResponse {
-    message: String,
-    purls: Vec<Purl>,
+    /// Status message returned by the API
+    pub message: String,
+    pub purls: Vec<Purl>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Purl {
-    name: String,
-    url: String,
-    counter: Option<i32>,
+    pub name: String,
+    pub url: String,
+    pub counter: Option<i32>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct ServiceStatus {
-    message: String,
-    members: i32,
-    addresses: i32,
-    profiles: i32,
+    /// Status message returned by the API
+    pub message: String,
+    pub members: i32,
+    pub addresses: i32,
+    pub profiles: i32,
 }
 
 pub trait ContentAsJSON {
@@ -263,23 +343,26 @@ impl ContentAsJSON for String {
 
 #[derive(Deserialize, Debug)]
 pub struct StatuslogResponseArray {
-    message: String,
-    id: String,
-    status: Status,
+    /// Status message returned by the API
+    pub message: String,
+    pub id: String,
+    pub status: Status,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct StatuslogUpdateResponse {
-    message: String,
-    id: String,
-    url: String,
+    /// Status message returned by the API
+    pub message: String,
+    pub id: String,
+    pub url: String,
 }
 
 /// Response struct for a successful statuslog query all statuses request
 #[derive(Deserialize, Debug)]
 pub struct StatuslogAllStatuses {
-    message: String,
-    statuses: Vec<Status>,
+    /// Status message returned by the API
+    pub message: String,
+    pub statuses: Vec<Status>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -290,16 +373,16 @@ pub struct Status {
     pub external_url: Option<String>,
 
     #[serde(skip_serializing)]
-    id: String,
+    pub id: String,
 
     #[serde(skip_serializing)]
     pub address: String,
 
     #[serde(skip_serializing)]
-    created: String,
+    pub created: String,
 
     #[serde(skip_serializing)]
-    relative_time: String,
+    pub relative_time: String,
 }
 
 impl Status {
@@ -325,13 +408,13 @@ impl Status {
 /// Your statuslog's bio.
 #[derive(Deserialize, Serialize, Debug)]
 pub struct StatuslogBio {
-    bio: String,
+    pub bio: String,
 
     #[serde(skip_serializing)]
-    css: String,
+    pub css: String,
 
     #[serde(skip_serializing)]
-    message: String,
+    pub message: String,
 }
 
 impl StatuslogBio {
@@ -356,32 +439,32 @@ impl ContentAsJSON for StatuslogBio {
 
 #[derive(Deserialize, Debug)]
 pub struct StatusPostResponse {
-    message: String,
-    id: String,
-    status: String,
-    url: String,
-    external_url: String,
+    pub message: String,
+    pub id: String,
+    pub status: String,
+    pub url: String,
+    pub external_url: String,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct ProfileThemes {
-    message: String,
-    themes: HashMap<String, Theme>,
+    pub message: String,
+    pub themes: HashMap<String, Theme>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Theme {
-    id: String,
-    name: String,
-    created: String,
-    updated: String,
-    author: String,
-    author_url: String,
-    version: String,
-    license: String,
-    description: String,
-    preview_css: String,
-    sample_profile: String,
+    pub id: String,
+    pub name: String,
+    pub created: String,
+    pub updated: String,
+    pub author: String,
+    pub author_url: String,
+    pub version: String,
+    pub license: String,
+    pub description: String,
+    pub preview_css: String,
+    pub sample_profile: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -442,13 +525,14 @@ impl Web {
     }
 }
 
+/// Response to a request for weblog entries
 #[derive(Deserialize, Debug)]
 pub struct WeblogEntriesResponse {
-    /// Status message povided by the API
-    message: String,
+    /// Status message provided by the API
+    pub message: String,
 
     /// A vector of `WeblogEntry` structs.
-    entries: Vec<WeblogEntry>,
+    pub entries: Vec<WeblogEntry>,
 }
 
 /// API response for a weblog entry GET request.
@@ -465,15 +549,15 @@ pub struct WeblogEntryResponse {
 /// A weblog entry
 #[derive(Deserialize, Debug)]
 pub struct WeblogEntry {
-    location: String,
-    title: String,
-    date: u32,
-    status: String,
-    body: String,
-    source: String,
-    metadata: WeblogMetadata,
-    output: String,
-    entry: String,
+    pub location: String,
+    pub title: String,
+    pub date: u32,
+    pub status: String,
+    pub body: String,
+    pub source: String,
+    pub metadata: WeblogMetadata,
+    pub output: String,
+    pub entry: String,
 
     #[serde(rename(deserialize = "type"))]
     entry_type: String,
@@ -486,7 +570,7 @@ pub struct WeblogMetadata {
     pub slug: String,
 }
 
-/// API resopnse for a weblog configuration GET request.
+/// API response for a weblog configuration GET request.
 #[derive(Deserialize, Debug)]
 pub struct WeblogConfigurationResponse {
     pub message: String,
