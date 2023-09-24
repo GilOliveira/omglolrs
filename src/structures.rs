@@ -21,6 +21,7 @@ use std::{collections::HashMap, error::Error, fmt, fmt::Display};
 //     // #[serde(default)] needs a function to be supplied.
 //     true
 
+/// Response to an account GET request
 #[derive(Deserialize, Debug)]
 pub struct AccountResponse {
     /// Status message returned by the API
@@ -437,6 +438,7 @@ impl ContentAsJSON for StatuslogBio {
     }
 }
 
+/// Response to a POST request to the statuslog endpoint
 #[derive(Deserialize, Debug)]
 pub struct StatusPostResponse {
     pub message: String,
@@ -446,12 +448,14 @@ pub struct StatusPostResponse {
     pub external_url: String,
 }
 
+/// Profile themes
 #[derive(Deserialize, Debug)]
 pub struct ProfileThemes {
     pub message: String,
     pub themes: HashMap<String, Theme>,
 }
 
+/// omg.lol theme
 #[derive(Deserialize, Debug)]
 pub struct Theme {
     pub id: String,
@@ -467,6 +471,7 @@ pub struct Theme {
     pub sample_profile: String,
 }
 
+/// omg.lol webpage
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Web {
     pub content: String,

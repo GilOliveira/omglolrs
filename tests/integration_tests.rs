@@ -1,6 +1,6 @@
 use omglol::{
     client::{Auth, NoAuth},
-    structures::{DNStype, RequestError},
+    structures::DNStype,
     OmglolClient,
 };
 
@@ -65,13 +65,3 @@ async fn get_web_page() {
     let response = client.get_web_page(&address).await.unwrap().response;
     println!("{:#?}", response);
 }
-
-// #[tokio::test]
-// async fn query_unauthorized_endpoint() {
-//     let (client, _) = init_auth_client();
-//     let response_result = client.get_web_page("foobar")
-//                               .await;
-//     let raised_error = *&dyn response_result.err().unwrap();
-//     assert_eq!(*raised_error.status_code, 401);
-//     println!("{:#?}", response_result);
-// }
